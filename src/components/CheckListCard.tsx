@@ -24,7 +24,7 @@ export const CheckListCard: React.FC<CheckListCardProps> = ({
 
     return (
         <>
-            <div className="flex items-start justify-between">
+            <div className="flex items-start justify-between mb-4">
                 <h3 className={cn(
                     "text-lg font-black transition-all font-premium leading-tight",
                     isAllDone ? "text-cyan-400" : "text-white"

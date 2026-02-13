@@ -3,41 +3,23 @@ import type { Mission } from '../types';
 export const DEFAULT_MISSIONS: Mission[] = [
   // Daily Missions
   {
-    id: 'd-login',
-    name: 'ログイン',
+    id: 'd-seasoncenter',
+    name: '毎日活躍度報酬',
     type: 'daily',
     category: 'daily',
     image: '🔑',
-    description: '1日1回ログインしてデイリー達成',
-    bgImage: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=400',
+    description: 'シーズンセンターの箱',
+    bgImage: '/missions/season_center.png',
   },
   {
-    id: 'w-pioneer',
-    name: '開拓者褒章',
+    id: 'd-ギルド出席',
+    name: 'ギルド出席',
     type: 'daily',
     category: 'daily',
-    image: '🎖️',
-    bgImage: 'https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&q=80&w=400',
-  },
-  {
-    id: 'd-不安定',
-    name: '不安定',
-    type: 'daily',
-    category: 'daily',
-    image: '🌌',
+    image: '🏚️',
     renderType: 'checkbox',
-    description: '特殊ミッションのクリア確認',
-    bgImage: 'https://images.unsplash.com/photo-1614850523296-d088224ddc74?auto=format&fit=crop&q=80&w=400',
-  },
-  {
-    id: 'd-シーズンストア',
-    name: 'シーズンストア',
-    type: 'daily',
-    category: 'daily',
-    image: '🍂',
-    renderType: 'checkbox',
-    description: '上級素材・虚蝕・パワーパーツ',
-    bgImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400',
+    description: 'ルオラさんに話しかけよう',
+    bgImage: '/missions/guild_attendance.png',
   },
   {
     id: 'd-ギルド輸送',
@@ -46,18 +28,27 @@ export const DEFAULT_MISSIONS: Mission[] = [
     category: 'daily',
     image: '🏚️',
     renderType: 'checkbox',
-    description: '',
-    bgImage: 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&q=80&w=400',
+    description: 'ダグラスさんに話しかけよう',
+    bgImage: '/missions/guild_transport.png',
   },
   {
-    id: 'd-モジュール',
-    name: 'モジュール',
+    id: 'd-不安定な空間',
+    name: '不安定な空間',
     type: 'daily',
     category: 'daily',
-    image: '⚙️',
+    image: '🌌',
     renderType: 'checkbox',
-    description: '分解・交換',
-    bgImage: 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?auto=format&fit=crop&q=80&w=400',
+    description: '特殊ミッションのクリア確認',
+    bgImage: '/missions/unstable_space.png',
+  },
+  {
+    id: 'w-pioneer',
+    name: '開拓局の依頼',
+    type: 'daily',
+    category: 'daily',
+    image: '🎖️',
+    description: '名声が欲しい方はどうぞ',
+    bgImage: '/missions/pioneer.png',
   },
   {
     id: 'd-boss-keys',
@@ -67,7 +58,7 @@ export const DEFAULT_MISSIONS: Mission[] = [
     image: '👹',
     renderType: 'stock',
     metadata: { stockType: 'boss' },
-    bgImage: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=400',
+    bgImage: '/missions/boss_keys.png',
   },
   {
     id: 'd-elite-keys',
@@ -77,7 +68,7 @@ export const DEFAULT_MISSIONS: Mission[] = [
     image: '💀',
     renderType: 'stock',
     metadata: { stockType: 'elite' },
-    bgImage: 'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&q=80&w=400',
+    bgImage: '/missions/elite_keys.png',
   },
   {
     id: 'd-mysterious-store',
@@ -87,7 +78,7 @@ export const DEFAULT_MISSIONS: Mission[] = [
     image: '🔮',
     renderType: 'checkbox',
     description: 'ストアをチェック',
-    bgImage: 'https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?auto=format&fit=crop&q=80&w=400',
+    bgImage: '/missions/mysterious_store.png',
   },
   {
     id: 'e-guild-dance',
@@ -98,9 +89,9 @@ export const DEFAULT_MISSIONS: Mission[] = [
     description: '金曜 19:30 - 19:55 開催',
     metadata: {
       activeDays: ['Friday'],
-      activeTimeRange: { start: '19:30', end: '19:55' }
+      //activeTimeRange: { start: '19:30', end: '19:55' }
     },
-    bgImage: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&q=80&w=400'
+    bgImage: '/missions/guild_dance.png'
   },
   {
     id: 'e-guild-hunt',
@@ -111,9 +102,9 @@ export const DEFAULT_MISSIONS: Mission[] = [
     description: '金・土・日 10:00 - 22:00 開催',
     metadata: {
       activeDays: ['Friday', 'Saturday', 'Sunday'],
-      activeTimeRange: { start: '10:00', end: '22:00' }
+      //activeTimeRange: { start: '10:00', end: '22:00' }
     },
-    bgImage: 'https://images.unsplash.com/photo-1493606371202-618002bf0907?auto=format&fit=crop&q=80&w=400'
+    bgImage: '/missions/guild_hunt.png'
   },
 
   // Weekly Missions
@@ -129,7 +120,7 @@ export const DEFAULT_MISSIONS: Mission[] = [
       { id: 'day2', name: '2日目' },
       { id: 'day3', name: '3日目' }
     ],
-    bgImage: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&q=80&w=400',
+    bgImage: '/missions/world_raid.png',
   },
   {
     id: 'd-カラフルストア',
@@ -144,7 +135,27 @@ export const DEFAULT_MISSIONS: Mission[] = [
       { id: 'gc', name: 'GC' },
       { id: 'fame', name: '名声' }
     ],
-    bgImage: 'https://images.unsplash.com/photo-1620121692029-d088224ddc74?auto=format&fit=crop&q=80&w=400',
+    bgImage: '/missions/colorful_store.png',
+  },
+  {
+    id: 'd-シーズンストア',
+    name: 'シーズンストア',
+    type: 'weekly',
+    category: 'weekly',
+    image: '🍂',
+    renderType: 'checkbox',
+    description: '上級素材・虚蝕・パワーパーツ',
+    bgImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400',
+  },
+  {
+    id: 'd-モジュール',
+    name: 'モジュール交換',
+    type: 'weekly',
+    category: 'weekly',
+    image: '⚙️',
+    renderType: 'checkbox',
+    description: '分解・交換',
+    bgImage: '/missions/module_exchange.png',
   },
   {
     id: 'w-guild',
@@ -153,7 +164,7 @@ export const DEFAULT_MISSIONS: Mission[] = [
     category: 'weekly',
     image: '📊',
     renderType: 'checkbox',
-    bgImage: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&q=80&w=400',
+    bgImage: '/missions/guild_weekly.png',
   },
   {
     id: 'w-ruins',
@@ -165,7 +176,7 @@ export const DEFAULT_MISSIONS: Mission[] = [
     metadata: {
       resetInterval: 'bi-weekly'
     },
-    bgImage: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=400',
+    bgImage: '/missions/regdinus_ruins.png',
   },
   {
     id: 'w-raid',
@@ -179,6 +190,6 @@ export const DEFAULT_MISSIONS: Mission[] = [
       { id: 'dark', name: '闇竜' },
       { id: 'light', name: '光竜' }
     ],
-    bgImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=400',
+    bgImage: '/missions/floating_island_raid.png',
   },
 ];
