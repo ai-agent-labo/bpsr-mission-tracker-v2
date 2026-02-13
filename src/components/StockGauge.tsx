@@ -47,7 +47,7 @@ export const StockGauge: React.FC<StockGaugeProps> = ({
             onChange(0);
           }}
           className={cn(
-            'h-10 px-2 rounded-xl border transition-all flex flex-col items-center justify-center shrink-0',
+            'h-8 px-2 rounded-xl border transition-all flex flex-col items-center justify-center shrink-0',
             value === 0
               ? (isEvent ? 'border-pink-500/50 bg-pink-500/20 text-pink-400 shadow-[0_0_12px_rgba(236,72,153,0.2)]' : 'border-cyan-500/50 bg-cyan-500/20 text-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.2)]')
               : 'border-slate-800 bg-slate-800/40 text-slate-500 hover:border-slate-700'
@@ -65,7 +65,7 @@ export const StockGauge: React.FC<StockGaugeProps> = ({
                 onChange(num);
               }}
               className={cn(
-                'h-10 w-8 min-w-8 rounded-xl border transition-all flex items-center justify-center',
+                'h-8 w-8 min-w-8 rounded-xl border transition-all flex items-center justify-center',
                 value >= num
                   ? (isEvent ? 'border-pink-500/50 bg-pink-500/20 text-pink-400 shadow-[0_0_12px_rgba(236,72,153,0.3)]' : 'border-cyan-500/50 bg-cyan-500/20 text-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.3)]')
                   : 'border-slate-800 bg-slate-800/40 text-slate-500 hover:border-slate-700'

@@ -35,7 +35,7 @@ export const Card: React.FC<CardProps> = ({ children, className, onClick, hover 
             {/* Glass Shimmer Overlay */}
             <div className="glass-shimmer absolute inset-0 z-0 opacity-0 group-hover:opacity-100 transition-opacity" />
 
-            <div className="relative z-10">{children}</div>
+            <div className="relative z-10 h-full flex flex-col">{children}</div>
 
             {/* Cyan Gradient Glows */}
             <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-cyan-500/5 blur-[60px]" />

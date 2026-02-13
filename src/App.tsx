@@ -268,21 +268,21 @@ export default function App() {
           >
             {mission.name}
           </h3>
-          {mission.renderType === 'checkbox' && (
+          {(!mission.renderType || mission.renderType === 'checkbox') && (
             <div
               className={cn(
-                'h-8 w-8 rounded-lg flex items-center justify-center transition-all border shrink-0',
+                'h-10 w-10 rounded-xl flex items-center justify-center transition-all border shrink-0',
                 isDone
                   ? (isEvent ? 'bg-pink-500 border-pink-400 shadow-[0_0_15px_rgba(236,72,153,0.4)]' : 'bg-cyan-500 border-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.4)]') + ' text-slate-900'
                   : 'bg-slate-800/80 border-slate-700/50 text-slate-500'
               )}
             >
-              {isDone ? <CheckCircle2 size={18} strokeWidth={3} /> : <Circle size={18} />}
+              {isDone ? <CheckCircle2 size={24} strokeWidth={3} /> : <Circle size={24} />}
             </div>
           )}
         </div>
         <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider leading-relaxed">
-          {mission.description || (mission.category === 'daily' ? 'Daily Directive' : 'Weekly Module')}
+          {mission.description || (mission.category === 'daily' ? '' : 'Weekly Module')}
         </p>
       </div>
     );
@@ -307,7 +307,7 @@ export default function App() {
     );
 
     const cardBaseStyles = cn(
-      'group relative overflow-hidden h-full flex flex-col transition-all duration-300',
+      'group relative overflow-hidden min-h-[150px] h-full flex flex-col transition-all duration-300',
       isDone
         ? (isEvent ? 'border-pink-500/40 bg-pink-500/5 hover:border-pink-500/80' : 'border-cyan-500/40 bg-cyan-500/5 hover:border-cyan-500/80')
         : (isEvent ? 'border-pink-500/20 hover:border-pink-500/80 shadow-pink-500/0 hover:shadow-[0_0_20px_rgba(236,72,153,0.15)] bg-slate-900/40' : 'border-cyan-500/20 hover:border-cyan-500/60 bg-slate-900/40')
@@ -375,9 +375,9 @@ export default function App() {
       const keyType = (mission.metadata?.stockType as 'boss' | 'elite') ?? (mission.id.includes('boss') ? 'boss' : 'elite');
       return (
         <Card key={mission.id} className={cardBaseStyles} bgImage={mission.bgImage}>
-          <div className="flex flex-col h-full gap-5">
+          <div className="flex flex-col h-full gap-4">
             <CardHeader />
-            <div className="flex-1 flex flex-col justify-center">
+            <div className="flex-1 flex items-center">
               <StockGauge
                 label={mission.name}
                 value={keyType === 'boss' ? state.bossKeys : state.eliteKeys}
@@ -401,7 +401,7 @@ export default function App() {
         onClick={() => toggleMission(mission.id)}
         className={cardBaseStyles}
       >
-        <div className="flex flex-col h-full gap-5">
+        <div className="flex flex-col h-full gap-4">
           <CardHeader />
           <CardFooter />
         </div>
