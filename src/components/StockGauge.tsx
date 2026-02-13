@@ -25,7 +25,7 @@ export const StockGauge: React.FC<StockGaugeProps> = ({
           {value} <span className="text-[10px] font-bold text-slate-500 uppercase">/ {max}</span>
         </span>
       </div>
-      <div className="flex items-center gap-1.5 justify-start">
+      <div className="flex items-center gap-1 justify-start">
         <button
           type="button"
           onClick={(e) => {
@@ -41,7 +41,7 @@ export const StockGauge: React.FC<StockGaugeProps> = ({
         >
           <span className="text-[9px] font-black uppercase tracking-tighter">CLR</span>
         </button>
-        <div className="flex items-center gap-1.5 flex-1 min-w-0">
+        <div className="flex items-center gap-1 flex-1 min-w-0">
           {Array.from({ length: max }, (_, i) => i + 1).map((num) => (
             <button
               key={num}
@@ -51,7 +51,7 @@ export const StockGauge: React.FC<StockGaugeProps> = ({
                 onChange(num);
               }}
               className={cn(
-                'h-10 w-10 min-w-10 rounded-xl border transition-all flex items-center justify-center',
+                'h-10 w-8 min-w-8 rounded-xl border transition-all flex items-center justify-center',
                 value >= num
                   ? 'border-cyan-500/50 bg-cyan-500/20 text-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.3)]'
                   : 'border-slate-800 bg-slate-800/40 text-slate-500 hover:border-slate-700'

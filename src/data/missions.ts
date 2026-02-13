@@ -40,13 +40,13 @@ export const DEFAULT_MISSIONS: Mission[] = [
     bgImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400',
   },
   {
-    id: 'd-ギルド雑貨屋',
-    name: 'ギルド雑貨屋',
+    id: 'd-ギルド輸送',
+    name: 'ギルド輸送',
     type: 'daily',
     category: 'daily',
     image: '🏚️',
     renderType: 'checkbox',
-    description: 'フォーカス回復剤購入',
+    description: '',
     bgImage: 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&q=80&w=400',
   },
   {
