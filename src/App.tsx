@@ -227,12 +227,19 @@ export default function App() {
   }, [weeklyMissions, hideCompleted, state.completed]);
 
   const renderMissionCard = (mission: Mission) => {
-    const isDone = !!state.completed[mission.id];
+    const isDone = isMissionCompleted(mission);
 
     // Multi-item types
     if (mission.renderType === 'store') {
       return (
-        <Card key={mission.id} bgImage={mission.bgImage} className="lg:row-span-2">
+        <Card
+          key={mission.id}
+          bgImage={mission.bgImage}
+          className={cn(
+            "lg:row-span-2",
+            isDone ? 'border-cyan-500/40 bg-cyan-500/5' : ''
+          )}
+        >
           <CheckListCard
             name={mission.name}
             subItems={mission.subItems ?? []}
@@ -246,10 +253,20 @@ export default function App() {
 
     if (mission.renderType === 'raid') {
       return (
-        <Card key={mission.id} className="border-cyan-500/20 md:col-span-2 h-full" bgImage={mission.bgImage}>
+        <Card
+          key={mission.id}
+          className={cn(
+            "md:col-span-2 h-full transition-all duration-500",
+            isDone ? 'border-cyan-500/40 bg-cyan-500/5' : 'border-cyan-500/20'
+          )}
+          bgImage={mission.bgImage}
+        >
           <div className="flex flex-col h-full justify-between gap-4">
             <div className="flex items-start justify-between">
-              <h3 className="text-lg font-black text-slate-300 transition-all font-premium leading-tight mb-4">
+              <h3 className={cn(
+                "text-lg font-black transition-all font-premium leading-tight mb-4",
+                isDone ? "text-cyan-400" : "text-slate-300"
+              )}>
                 {mission.name}
               </h3>
             </div>
@@ -265,10 +282,20 @@ export default function App() {
 
     if (mission.renderType === 'ruins') {
       return (
-        <Card key={mission.id} className="border-cyan-500/20 h-full" bgImage={mission.bgImage}>
+        <Card
+          key={mission.id}
+          className={cn(
+            "h-full transition-all duration-500",
+            isDone ? 'border-cyan-500/40 bg-cyan-500/5' : 'border-cyan-500/20'
+          )}
+          bgImage={mission.bgImage}
+        >
           <div className="flex flex-col h-full justify-between gap-4">
             <div className="flex items-start justify-between">
-              <h3 className="text-lg font-black text-slate-300 transition-all font-premium leading-tight">
+              <h3 className={cn(
+                "text-lg font-black transition-all font-premium leading-tight",
+                isDone ? "text-cyan-400" : "text-slate-300"
+              )}>
                 {mission.name}
               </h3>
               <div className="flex items-center gap-1.5">
@@ -289,12 +316,20 @@ export default function App() {
     if (mission.renderType === 'stock') {
       const keyType = (mission.metadata?.stockType as 'boss' | 'elite') ?? (mission.id.includes('boss') ? 'boss' : 'elite');
       return (
-        <Card key={mission.id} className="h-full" bgImage={mission.bgImage}>
+        <Card
+          key={mission.id}
+          className={cn(
+            "h-full transition-all duration-500",
+            isDone ? 'border-cyan-500/40 bg-cyan-500/5' : ''
+          )}
+          bgImage={mission.bgImage}
+        >
           <div className="flex flex-col h-full justify-between gap-4">
             <StockGauge
               label={mission.name}
               value={keyType === 'boss' ? state.bossKeys : state.eliteKeys}
               onChange={(v) => setStock(keyType, v)}
+              isDone={isDone}
             />
           </div>
         </Card>
@@ -357,7 +392,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen p-4 pb-32 md:p-8 flex flex-col items-center">
+    <div className="min-h-screen p-4 pb-48 md:p-8 flex flex-col items-center">
       <header className="w-full max-w-6xl mb-12 flex flex-col md:flex-row items-end justify-between gap-8">
         <div className="flex items-center gap-5">
           <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-[0_0_25px_rgba(6,182,212,0.4)]">
@@ -490,34 +525,34 @@ export default function App() {
         </section>
       </main>
 
-      <footer className="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-4 px-6 py-4 rounded-3xl border border-white/10 bg-slate-900/60 backdrop-blur-2xl shadow-2xl z-50">
+      <div className="mt-24 pb-12 flex flex-col items-center opacity-30 hover:opacity-100 transition-opacity select-none">
+        <p className="text-[9px] font-black tracking-[0.2em] text-slate-500">
+          © 2026 青とまと All Rights Reserved.
+        </p>
+      </div>
+
+      <div className="fixed bottom-6 right-6 flex flex-col gap-3 z-50">
         <button
           onClick={undo}
           disabled={state.undoStack.length === 0}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-slate-400 hover:text-white hover:bg-slate-800 transition-all disabled:opacity-30 active:scale-90"
+          title="Undo"
+          className="relative h-12 w-12 rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-2xl shadow-2xl flex items-center justify-center text-slate-400 hover:text-white hover:border-cyan-500/50 transition-all disabled:opacity-20 active:scale-90 group"
         >
-          <Undo2 size={18} />
-          Undo
-          <span className="bg-slate-800 px-1.5 py-0.5 rounded text-[10px]">
-            {state.undoStack.length}
-          </span>
+          <Undo2 size={20} />
+          {state.undoStack.length > 0 && (
+            <span className="absolute -top-1 -right-1 h-5 min-w-[20px] px-1 bg-cyan-600 text-white text-[10px] font-black rounded-lg flex items-center justify-center shadow-[0_0_10px_rgba(8,145,178,0.5)]">
+              {state.undoStack.length}
+            </span>
+          )}
         </button>
-
-        <div className="w-[1px] h-6 bg-white/10" />
 
         <button
           onClick={resetAll}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-all active:scale-90"
+          title="Reset All"
+          className="h-12 w-12 rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-2xl shadow-2xl flex items-center justify-center text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 hover:border-rose-500/50 transition-all active:scale-90"
         >
-          <RotateCcw size={18} />
-          Reset All
+          <RotateCcw size={20} />
         </button>
-      </footer>
-
-      <div className="pb-12 mt-8 flex flex-col items-center opacity-40 hover:opacity-100 transition-opacity">
-        <p className="text-[10px] font-black tracking-[0.2em] text-slate-500">
-          © 2026 青とまと All Rights Reserved.
-        </p>
       </div>
     </div>
   );

@@ -7,18 +7,23 @@ interface StockGaugeProps {
   max?: number;
   onChange: (value: number) => void;
   label: string;
+  isDone?: boolean;
 }
 
 export const StockGauge: React.FC<StockGaugeProps> = ({
   value,
   max = 6,
   onChange,
-  label
+  label,
+  isDone
 }) => {
   return (
     <>
       <div className="flex items-start justify-between">
-        <h3 className="text-lg font-black text-slate-300 transition-all font-premium leading-tight">
+        <h3 className={cn(
+          "text-lg font-black transition-all font-premium leading-tight",
+          isDone ? "text-cyan-400" : "text-slate-300"
+        )}>
           {label}
         </h3>
         <span className="text-xl font-black text-cyan-400 font-mono tracking-tighter">
