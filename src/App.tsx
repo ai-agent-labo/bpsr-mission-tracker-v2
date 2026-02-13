@@ -368,7 +368,7 @@ export default function App() {
               BPSR MISSION TRACKER
             </h1>
             <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">
-              Ambient Dashboard 2.1
+              PRE-RELEASE 0.1.0
             </p>
           </div>
         </div>
@@ -513,6 +513,12 @@ export default function App() {
           Reset All
         </button>
       </footer>
+
+      <div className="pb-12 mt-8 flex flex-col items-center opacity-40 hover:opacity-100 transition-opacity">
+        <p className="text-[10px] font-black tracking-[0.2em] text-slate-500">
+          © 2026 青とまと All Rights Reserved.
+        </p>
+      </div>
     </div>
   );
 }
