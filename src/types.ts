@@ -16,6 +16,8 @@ export interface Mission {
   description?: string;
   renderType?: RenderType;
   subItems?: SubItem[];
+  startDate?: string;
+  endDate?: string;
   metadata?: {
     stockType?: 'boss' | 'elite';
     resetInterval?: 'daily' | 'weekly' | 'bi-weekly';

@@ -103,6 +103,7 @@ export default function App() {
 
   const dailyMissions = activeMissions.filter((m) => m.category === 'daily');
   const weeklyMissions = activeMissions.filter((m) => m.category === 'weekly');
+  const specialMissions = activeMissions.filter((m) => m.category === 'other');
 
   const isMissionCompleted = (mission: Mission) => {
     if (mission.renderType === 'store') {
@@ -191,6 +192,26 @@ export default function App() {
 
   const weeklyProgress = getWeeklyProgress();
 
+  const getSpecialProgress = () => {
+    let total = 0;
+    let done = 0;
+    specialMissions.forEach(m => {
+      if (m.renderType === 'store' || m.renderType === 'raid') {
+        const subItems = m.subItems ?? [];
+        subItems.forEach(s => {
+          total++;
+          if (state.completed[`${m.id}:${s.id}`]) done++;
+        });
+      } else {
+        total++;
+        if (state.completed[m.id] || isMissionCompleted(m)) done++;
+      }
+    });
+    return total === 0 ? 0 : Math.round((done / total) * 100);
+  };
+
+  const specialProgress = getSpecialProgress();
+
   useEffect(() => {
     const lastDailyReset = formatISO(getNextReset('daily'));
     const lastWeeklyReset = formatISO(getNextReset('weekly'));
@@ -226,55 +247,108 @@ export default function App() {
     return weeklyMissions.filter(m => !isMissionCompleted(m));
   }, [weeklyMissions, hideCompleted, state.completed]);
 
+  const visibleSpecialMissions = useMemo(() => {
+    if (!hideCompleted) return specialMissions;
+    return specialMissions.filter(m => !isMissionCompleted(m));
+  }, [specialMissions, hideCompleted, state.completed]);
+
   const renderMissionCard = (mission: Mission) => {
     const isDone = isMissionCompleted(mission);
+
+    const isEvent = mission.type === 'event';
+
+    const CardHeader = () => (
+      <div className="flex flex-col gap-1.5">
+        <div className="flex justify-between items-start gap-4">
+          <h3
+            className={cn(
+              'text-lg font-black transition-all font-premium leading-tight',
+              isDone ? (isEvent ? 'text-pink-400' : 'text-cyan-400') : 'text-white'
+            )}
+          >
+            {mission.name}
+          </h3>
+          {mission.renderType === 'checkbox' && (
+            <div
+              className={cn(
+                'h-8 w-8 rounded-lg flex items-center justify-center transition-all border shrink-0',
+                isDone
+                  ? (isEvent ? 'bg-pink-500 border-pink-400 shadow-[0_0_15px_rgba(236,72,153,0.4)]' : 'bg-cyan-500 border-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.4)]') + ' text-slate-900'
+                  : 'bg-slate-800/80 border-slate-700/50 text-slate-500'
+              )}
+            >
+              {isDone ? <CheckCircle2 size={18} strokeWidth={3} /> : <Circle size={18} />}
+            </div>
+          )}
+        </div>
+        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider leading-relaxed">
+          {mission.description || (mission.category === 'daily' ? 'Daily Directive' : 'Weekly Module')}
+        </p>
+      </div>
+    );
+
+    const CardFooter = () => (
+      <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
+        <span className={cn(
+          "text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded",
+          isEvent ? "text-pink-500 bg-pink-500/10" : "text-cyan-500 bg-cyan-500/10"
+        )}>
+          {isEvent ? '#EVENT' : '#ROUTINE'}
+        </span>
+        {(mission.startDate || mission.endDate) && (
+          <div className="flex items-center gap-1.5 opacity-60">
+            <Clock size={10} className="text-slate-500" />
+            <span className="text-[9px] font-black font-mono text-slate-400">
+              {mission.startDate ? format(parseISO(mission.startDate), 'MM/dd') : '??'} - {mission.endDate ? format(parseISO(mission.endDate), 'MM/dd') : '??'}
+            </span>
+          </div>
+        )}
+      </div>
+    );
+
+    const cardBaseStyles = cn(
+      'group relative overflow-hidden h-full flex flex-col transition-all duration-300',
+      isDone
+        ? (isEvent ? 'border-pink-500/40 bg-pink-500/5 hover:border-pink-500/80' : 'border-cyan-500/40 bg-cyan-500/5 hover:border-cyan-500/80')
+        : (isEvent ? 'border-pink-500/20 hover:border-pink-500/80 shadow-pink-500/0 hover:shadow-[0_0_20px_rgba(236,72,153,0.15)] bg-slate-900/40' : 'border-cyan-500/20 hover:border-cyan-500/60 bg-slate-900/40')
+    );
+
 
     // Multi-item types
     if (mission.renderType === 'store') {
       return (
-        <Card
-          key={mission.id}
-          bgImage={mission.bgImage}
-          className={cn(
-            "lg:row-span-2",
-            isDone ? 'border-cyan-500/40 bg-cyan-500/5' : ''
-          )}
-        >
-          <CheckListCard
-            name={mission.name}
-            subItems={mission.subItems ?? []}
-            parentId={mission.id}
-            completed={state.completed}
-            onToggle={toggleMission}
-          />
+        <Card key={mission.id} bgImage={mission.bgImage} className={cn(cardBaseStyles, "lg:row-span-2")}>
+          <div className="flex flex-col h-full gap-5">
+            <CardHeader />
+            <div className="flex-1">
+              <CheckListCard
+                name={mission.name}
+                subItems={mission.subItems ?? []}
+                parentId={mission.id}
+                completed={state.completed}
+                onToggle={toggleMission}
+                hideTitle
+              />
+            </div>
+            <CardFooter />
+          </div>
         </Card>
       );
     }
 
     if (mission.renderType === 'raid') {
       return (
-        <Card
-          key={mission.id}
-          className={cn(
-            "md:col-span-2 h-full transition-all duration-500",
-            isDone ? 'border-cyan-500/40 bg-cyan-500/5' : 'border-cyan-500/20'
-          )}
-          bgImage={mission.bgImage}
-        >
-          <div className="flex flex-col h-full justify-between gap-4">
-            <div className="flex items-start justify-between">
-              <h3 className={cn(
-                "text-lg font-black transition-all font-premium leading-tight mb-4",
-                isDone ? "text-cyan-400" : "text-slate-300"
-              )}>
-                {mission.name}
-              </h3>
+        <Card key={mission.id} className={cn(cardBaseStyles, "md:col-span-2")} bgImage={mission.bgImage}>
+          <div className="flex flex-col h-full gap-5">
+            <CardHeader />
+            <div className="flex-1 min-h-[140px]">
+              <RaidGrid
+                mission={mission}
+                completed={state.completed}
+                onToggle={toggleMission}
+              />
             </div>
-            <RaidGrid
-              mission={mission}
-              completed={state.completed}
-              onToggle={toggleMission}
-            />
+            <CardFooter />
           </div>
         </Card>
       );
@@ -282,32 +356,16 @@ export default function App() {
 
     if (mission.renderType === 'ruins') {
       return (
-        <Card
-          key={mission.id}
-          className={cn(
-            "h-full transition-all duration-500",
-            isDone ? 'border-cyan-500/40 bg-cyan-500/5' : 'border-cyan-500/20'
-          )}
-          bgImage={mission.bgImage}
-        >
-          <div className="flex flex-col h-full justify-between gap-4">
-            <div className="flex items-start justify-between">
-              <h3 className={cn(
-                "text-lg font-black transition-all font-premium leading-tight",
-                isDone ? "text-cyan-400" : "text-slate-300"
-              )}>
-                {mission.name}
-              </h3>
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest bg-slate-800/40 px-2 py-0.5 rounded">
-                  #BI-WEEKLY
-                </span>
-              </div>
+        <Card key={mission.id} className={cardBaseStyles} bgImage={mission.bgImage}>
+          <div className="flex flex-col h-full gap-5">
+            <CardHeader />
+            <div className="flex-1 flex flex-col justify-center">
+              <RuinsSelector
+                floor={state.ruinsFloor}
+                onChange={setRuinsFloor}
+              />
             </div>
-            <RuinsSelector
-              floor={state.ruinsFloor}
-              onChange={setRuinsFloor}
-            />
+            <CardFooter />
           </div>
         </Card>
       );
@@ -316,21 +374,20 @@ export default function App() {
     if (mission.renderType === 'stock') {
       const keyType = (mission.metadata?.stockType as 'boss' | 'elite') ?? (mission.id.includes('boss') ? 'boss' : 'elite');
       return (
-        <Card
-          key={mission.id}
-          className={cn(
-            "h-full transition-all duration-500",
-            isDone ? 'border-cyan-500/40 bg-cyan-500/5' : ''
-          )}
-          bgImage={mission.bgImage}
-        >
-          <div className="flex flex-col h-full justify-between gap-4">
-            <StockGauge
-              label={mission.name}
-              value={keyType === 'boss' ? state.bossKeys : state.eliteKeys}
-              onChange={(v) => setStock(keyType, v)}
-              isDone={isDone}
-            />
+        <Card key={mission.id} className={cardBaseStyles} bgImage={mission.bgImage}>
+          <div className="flex flex-col h-full gap-5">
+            <CardHeader />
+            <div className="flex-1 flex flex-col justify-center">
+              <StockGauge
+                label={mission.name}
+                value={keyType === 'boss' ? state.bossKeys : state.eliteKeys}
+                onChange={(v) => setStock(keyType, v)}
+                isDone={isDone}
+                isEvent={isEvent}
+                hideLabel
+              />
+            </div>
+            <CardFooter />
           </div>
         </Card>
       );
@@ -342,50 +399,11 @@ export default function App() {
         key={mission.id}
         bgImage={mission.bgImage}
         onClick={() => toggleMission(mission.id)}
-        className={cn(
-          'group relative overflow-hidden min-h-[140px] h-full',
-          isDone ? 'border-cyan-500/40 bg-cyan-500/5' : ''
-        )}
+        className={cardBaseStyles}
       >
-        <div className="flex flex-col h-full justify-between gap-4">
-          <div className="flex justify-between items-start">
-            <div>
-              <h3
-                className={cn(
-                  'text-lg font-black transition-all font-premium leading-tight',
-                  isDone ? 'text-cyan-400' : 'text-white'
-                )}
-              >
-                {mission.name}
-              </h3>
-              <p className="text-[10px] font-bold text-slate-500 mt-1 uppercase tracking-wider">
-                {mission.description || (mission.category === 'daily' ? 'Daily Directive' : 'Weekly Module')}
-              </p>
-            </div>
-
-            <div
-              className={cn(
-                'h-8 w-8 rounded-lg flex items-center justify-center transition-all border shrink-0',
-                isDone ? 'bg-cyan-500 border-cyan-400 text-slate-900 shadow-[0_0_15px_rgba(6,182,212,0.4)]' : 'bg-slate-800/80 border-slate-700/50 text-slate-500'
-              )}
-            >
-              {isDone ? <CheckCircle2 size={18} strokeWidth={3} /> : <Circle size={18} />}
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest bg-slate-800/40 px-2 py-0.5 rounded">
-              #{mission.type.toUpperCase()}
-            </span>
-            {isDone && state.completed[mission.id] && (
-              <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20">
-                <Clock size={10} className="text-cyan-500" />
-                <span className="text-[9px] font-black font-mono text-cyan-400">
-                  {format(parseISO(state.completed[mission.id]!), 'HH:mm')}
-                </span>
-              </div>
-            )}
-          </div>
+        <div className="flex flex-col h-full gap-5">
+          <CardHeader />
+          <CardFooter />
         </div>
       </Card>
     );
@@ -480,6 +498,28 @@ export default function App() {
                 />
               </div>
             </div>
+
+            {specialMissions.length > 0 && (
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[9px] uppercase font-black text-slate-500 tracking-widest">
+                    Special Sync
+                  </span>
+                  <div className="flex items-center gap-1">
+                    {specialProgress === 100 && <CheckCircle2 size={12} className="text-pink-400 animate-bounce" />}
+                    <span className="text-[10px] font-black text-pink-400">
+                      {specialProgress}%
+                    </span>
+                  </div>
+                </div>
+                <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-pink-500 transition-all duration-1000 shadow-[0_0_10px_rgba(236,72,153,0.5)]"
+                    style={{ width: `${specialProgress}%` }}
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
           {isLoadingSheet && (
@@ -491,38 +531,60 @@ export default function App() {
         </div>
       </header>
 
-      <main className="w-full max-w-6xl flex flex-col gap-12">
+      <main className="w-full max-w-6xl flex flex-col gap-16">
         {/* Daily Section */}
-        <section className="flex flex-col gap-6">
-          <div className="flex items-center gap-3 ml-1">
-            <div className="h-4 w-1 rounded-full bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.6)]" />
-            <div className="flex flex-col">
-              <h2 className="font-black text-white uppercase tracking-[0.2em] text-xs">
-                Daily Directives
-              </h2>
-              <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Immediate priority operations</span>
+        {visibleDailyMissions.length > 0 && (
+          <section className="flex flex-col gap-6">
+            <div className="flex items-center gap-3 ml-1">
+              <div className="h-4 w-1 rounded-full bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.6)]" />
+              <div className="flex flex-col">
+                <h2 className="font-black text-white uppercase tracking-[0.2em] text-xs">
+                  Daily Directives
+                </h2>
+                <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Immediate priority operations</span>
+              </div>
             </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-min">
-            {visibleDailyMissions.map(renderMissionCard)}
-          </div>
-        </section>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-min">
+              {visibleDailyMissions.map(renderMissionCard)}
+            </div>
+          </section>
+        )}
 
         {/* Weekly Section */}
-        <section className="flex flex-col gap-6">
-          <div className="flex items-center gap-3 ml-1">
-            <div className="h-4 w-1 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.6)]" />
-            <div className="flex flex-col">
-              <h2 className="font-black text-white uppercase tracking-[0.2em] text-xs">
-                Weekly Modules
-              </h2>
-              <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Strategic long-term objectives</span>
+        {visibleWeeklyMissions.length > 0 && (
+          <section className="flex flex-col gap-6">
+            <div className="flex items-center gap-3 ml-1">
+              <div className="h-4 w-1 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.6)]" />
+              <div className="flex flex-col">
+                <h2 className="font-black text-white uppercase tracking-[0.2em] text-xs">
+                  Weekly Modules
+                </h2>
+                <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Strategic long-term objectives</span>
+              </div>
             </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-min">
-            {visibleWeeklyMissions.map(renderMissionCard)}
-          </div>
-        </section>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-min">
+              {visibleWeeklyMissions.map(renderMissionCard)}
+            </div>
+          </section>
+        )}
+
+        {/* Special Section */}
+        {visibleSpecialMissions.length > 0 && (
+          <section className="flex flex-col gap-6">
+            <div className="flex items-center gap-3 ml-1">
+              <div className="h-4 w-1 rounded-full bg-pink-500 shadow-[0_0_10px_rgba(236,72,153,0.6)]" />
+              <div className="flex flex-col">
+                <h2 className="font-black text-white uppercase tracking-[0.2em] text-xs">
+                  Special Operations
+                </h2>
+                <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Limited campaign & seasonal goals</span>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-min">
+              {visibleSpecialMissions.map(renderMissionCard)}
+            </div>
+          </section>
+        )}
       </main>
 
       <div className="mt-24 pb-12 flex flex-col items-center opacity-30 hover:opacity-100 transition-opacity select-none">

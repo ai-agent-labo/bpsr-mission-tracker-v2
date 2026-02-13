@@ -9,6 +9,7 @@ interface CheckListCardProps {
     parentId: string;
     completed: Record<string, string | null>;
     onToggle: (id: string) => void;
+    hideTitle?: boolean;
 }
 
 export const CheckListCard: React.FC<CheckListCardProps> = ({
@@ -16,7 +17,8 @@ export const CheckListCard: React.FC<CheckListCardProps> = ({
     subItems,
     parentId,
     completed,
-    onToggle
+    onToggle,
+    hideTitle
 }) => {
     const childIds = subItems.map((sub) => `${parentId}:${sub.id}`);
     const completedCount = childIds.filter((id) => !!completed[id]).length;
@@ -24,17 +26,19 @@ export const CheckListCard: React.FC<CheckListCardProps> = ({
 
     return (
         <>
-            <div className="flex items-start justify-between mb-4">
-                <h3 className={cn(
-                    "text-lg font-black transition-all font-premium leading-tight",
-                    isAllDone ? "text-cyan-400" : "text-white"
-                )}>
-                    {name}
-                </h3>
-                <span className="text-[10px] font-black tabular-nums text-slate-500 bg-slate-800/40 px-2 py-0.5 rounded">
-                    {completedCount} / {subItems.length}
-                </span>
-            </div>
+            {!hideTitle && (
+                <div className="flex items-start justify-between mb-4">
+                    <h3 className={cn(
+                        "text-lg font-black transition-all font-premium leading-tight",
+                        isAllDone ? "text-cyan-400" : "text-white"
+                    )}>
+                        {name}
+                    </h3>
+                    <span className="text-[10px] font-black tabular-nums text-slate-500 bg-slate-800/40 px-2 py-0.5 rounded">
+                        {completedCount} / {subItems.length}
+                    </span>
+                </div>
+            )}
 
             <div className="grid grid-cols-1 gap-2">
                 {subItems.map((sub) => {

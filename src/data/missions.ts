@@ -83,7 +83,7 @@ export const DEFAULT_MISSIONS: Mission[] = [
   {
     id: 'e-guild-dance',
     name: 'ギルドダンス',
-    type: 'event',
+    type: 'daily',
     category: 'daily',
     image: '💃',
     description: '金曜 19:30 - 19:55 開催',
@@ -96,7 +96,7 @@ export const DEFAULT_MISSIONS: Mission[] = [
   {
     id: 'e-guild-hunt',
     name: 'ギルドハント',
-    type: 'event',
+    type: 'daily',
     category: 'daily',
     image: '🏹',
     description: '金・土・日 10:00 - 22:00 開催',
@@ -173,6 +173,7 @@ export const DEFAULT_MISSIONS: Mission[] = [
     category: 'weekly',
     image: '🏰',
     renderType: 'ruins',
+    description: '分解・交換',
     metadata: {
       resetInterval: 'bi-weekly'
     },
@@ -192,4 +193,69 @@ export const DEFAULT_MISSIONS: Mission[] = [
     ],
     bgImage: '/missions/floating_island_raid.png',
   },
+  {
+    id: 'd-event-prayer-gift',
+    name: '祈歳の贈り物',
+    type: 'event',
+    category: 'daily',
+    image: '🎁',
+    renderType: 'checkbox',
+    description: '【祈歳祝典】毎日NPCに話しかけるチェックイン。歳序の印を獲得',
+    bgImage: '/missions/prayer_gift.png',
+    startDate: '2026-01-29',
+    endDate: '2026-02-26'
+  },
+  {
+    id: 'd-event-time-light',
+    name: '光の流れ往く時',
+    type: 'event',
+    category: 'daily',
+    image: '🕯️',
+    renderType: 'checkbox',
+    description: '【祈歳祝典】毎日更新の謎解きやミニゲームに参加し優待カードを獲得',
+    bgImage: '/missions/time_of_light.png',
+    startDate: '2026-01-29',
+    endDate: '2026-02-26'
+  },
+  {
+    id: 'd-event-bursting-wishes',
+    name: '弾ける願い',
+    type: 'event',
+    category: 'daily',
+    image: '✨',
+    renderType: 'checkbox',
+    description: '【祈歳祝典】毎日初回多め。開催場所周辺に滞在して歳序の印を稼ぐ',
+    bgImage: '/missions/bursting_wishes.png',
+    startDate: '2026-01-29',
+    endDate: '2026-02-26'
+  },
+  {
+    id: 'w-event-saima-invasion',
+    name: '歳魔、襲来',
+    type: 'event',
+    category: 'weekly',
+    image: '🧨',
+    renderType: 'stock',
+    description: '【祈歳祝典】週5回まで。20人で爆竹を投げて戦う限定ダンジョン',
+    bgImage: '/missions/saima_invasion.png',
+    startDate: '2026-01-29',
+    endDate: '2026-02-26'
+  },
+  {
+    id: 'e-prayer-market',
+    name: '祈歳市場',
+    type: 'event',
+    category: 'other',
+    image: '🏮',
+    renderType: 'store',
+    description: '【祈歳祝典】集めた印やカードで限定衣装やマウント、エモートを交換',
+    bgImage: '/missions/prayer_market.png',
+    startDate: '2026-01-29',
+    endDate: '2026-02-26',
+    subItems: [
+      { id: 'pm-mount', name: '遊龍戯月マウントボックス' },
+      { id: 'pm-costume', name: '朔日の驚雷セット' },
+      { id: 'pm-emote', name: 'エモート：祝儀袋を渡す' }
+    ]
+  }
 ];
