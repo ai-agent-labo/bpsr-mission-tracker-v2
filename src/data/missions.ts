@@ -173,7 +173,6 @@ export const DEFAULT_MISSIONS: Mission[] = [
     category: 'weekly',
     image: '🏰',
     renderType: 'ruins',
-    description: '分解・交換',
     metadata: {
       resetInterval: 'bi-weekly'
     },
@@ -257,5 +256,93 @@ export const DEFAULT_MISSIONS: Mission[] = [
       { id: 'pm-costume', name: '朔日の驚雷セット' },
       { id: 'pm-emote', name: 'エモート：祝儀袋を渡す' }
     ]
+  },
+  {
+    id: 'e-priest-stockpile',
+    name: '祭司の備蓄計画',
+    type: 'event',
+    category: 'weekly',
+    image: '📦',
+    description: '毎週の物資提出で報酬獲得。2/7からデイリー活躍度、2/9からダンジョンでも「祭司からの贈り物」を入手可能',
+    bgImage: '/missions/priest_stockpile.png',
+    startDate: '2026-02-06',
+    endDate: '2026-03-02'
+  },
+  {
+    id: 'e-time-gift',
+    name: '時の贈り物',
+    type: 'event',
+    category: 'daily',
+    image: '📅',
+    renderType: 'checkbox',
+    description: '期間中の累計ログイン報酬。最上級素材・選択ボックスやガシャコインなど豪華報酬を獲得可能',
+    bgImage: '/missions/time_gift.png',
+    startDate: '2026-02-06',
+    endDate: '2026-03-02'
+  },
+  {
+    id: 'e-ash-covenant',
+    name: '祖霊の灰契',
+    type: 'event',
+    category: 'event',
+    image: '🔥',
+    renderType: 'store',
+    description: '入手した各種「灰契」をカナミア族集落の篝り火に捧げて報酬を獲得。捧げた累計回数で限定フレーム等も入手',
+    bgImage: '/missions/ash_covenant.png',
+    startDate: '2026-02-06',
+    endDate: '2026-03-02',
+    subItems: [
+      { id: 'ac-zabun', name: 'ザブン長老の灰契（料理）' },
+      { id: 'ac-karappo', name: 'カラッポ長老の灰契（クラスEXP）' },
+      { id: 'ac-white-wolf', name: 'ホワイトウルフの灰契（モジュール）' },
+      { id: 'ac-kitake', name: 'キタケ長老の灰契（ジェム/ルーノ）' }
+    ]
+  },
+  {
+    id: 'e-ancestor-path',
+    name: '祖霊の道',
+    type: 'event',
+    category: 'other',
+    image: '🗺️',
+    renderType: 'checkbox',
+    description: 'アステルリーズのウィルバートから始まる連続クエスト。クリアで「祭司からの贈り物」や限定ハガキを入手',
+    bgImage: '/missions/ancestor_path.png',
+    startDate: '2026-02-06',
+    endDate: '2026-03-02'
+  },
+  {
+    id: 'e-spirit-dance',
+    name: '霊舞',
+    type: 'event',
+    category: 'daily',
+    image: '💃',
+    description: '金土日の特定時間に開催。篝り火で「霊舞」に参加すると、1日1回ランダムで「灰契」を獲得可能',
+    bgImage: '/missions/spirit_dance.png',
+    startDate: '2026-02-06',
+    endDate: '2026-03-02'
+  },
+  {
+    id: 'e-harvest-feast',
+    name: '豊穣の宴',
+    type: 'event',
+    category: 'daily',
+    image: '🍖',
+    renderType: 'checkbox',
+    description: '12時/18時からの開催時間にカナミア集落で食事。筋力・敏捷・知力+300などの強力なバフを最大5時間分獲得',
+    bgImage: '/missions/harvest_feast.png',
+    startDate: '2026-02-06',
+    endDate: '2026-03-19'
+  },
+  {
+    id: 'e-thousand-dream-night',
+    name: '千夢織霊の夜',
+    type: 'event',
+    category: 'other',
+    image: '🌙',
+    renderType: 'checkbox',
+    description: '5人マッチングで挑むイベントダンジョン。ボスを倒して「祖霊の芽胞」を集め、豪華報酬と交換',
+    bgImage: '/missions/thousand_dream_night.png',
+    startDate: '2026-02-09',
+    endDate: '2026-03-02'
   }
 ];
