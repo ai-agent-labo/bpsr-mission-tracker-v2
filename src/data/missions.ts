@@ -213,8 +213,8 @@ export const DEFAULT_MISSIONS: Mission[] = [
     renderType: 'checkbox',
     description: '【祈歳祝典】毎日更新の謎解きやミニゲームに参加し優待カードを獲得',
     bgImage: '/missions/time_of_light.png',
-    startDate: '2026-01-29',
-    endDate: '2026-02-26'
+    startDate: '2026-02-25',
+    endDate: '2026-03-11'
   },
   {
     id: 'd-event-bursting-wishes',
@@ -326,5 +326,17 @@ export const DEFAULT_MISSIONS: Mission[] = [
     bgImage: '/missions/thousand_dream_night.png',
     startDate: '2026-02-09',
     endDate: '2026-03-02'
-  }
+  },
+  {
+    id: 'e-love-letter',
+    name: 'そよ風に舞う 恋の便り',
+    type: 'event',
+    category: 'daily',
+    image: '💌',
+    renderType: 'checkbox',
+    description: '恋のお手紙を届けるミッション',
+    bgImage: '/missions/love_letter.png',
+    startDate: '2026-02-11',
+    endDate: '2026-02-23'
+  },
 ];

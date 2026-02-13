@@ -53,7 +53,12 @@ export function useMissionLogic(missions: Mission[]) {
     let changed = false;
 
     missions.forEach((m) => {
-      const resetInterval = m.metadata?.resetInterval || (m.type as 'daily' | 'weekly') || 'daily';
+      const resetInterval: 'daily' | 'weekly' | 'bi-weekly' | 'none' =
+        m.metadata?.resetInterval ||
+        (m.category === 'daily' ? 'daily' :
+          m.category === 'weekly' ? 'weekly' :
+            m.type === 'daily' ? 'daily' :
+              m.type === 'weekly' ? 'weekly' : 'none');
 
       if (m.renderType === 'store' && m.subItems) {
         m.subItems.forEach((sub) => {

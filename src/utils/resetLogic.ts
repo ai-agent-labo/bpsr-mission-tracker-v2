@@ -59,16 +59,17 @@ export function getLastBiWeeklyReset(date: Date, anchorDateString?: string) {
 
 export function shouldReset(
   lastCompletedAt: string | null,
-  type: 'daily' | 'weekly' | 'bi-weekly'
+  type: 'daily' | 'weekly' | 'bi-weekly' | 'none'
 ): boolean {
-  if (!lastCompletedAt) return false;
+  if (!lastCompletedAt || !type || type === 'none') return false;
   const lastDate = new Date(lastCompletedAt);
   const now = new Date();
 
   let lastReset: Date;
   if (type === 'daily') lastReset = getLastDailyReset(now);
   else if (type === 'weekly') lastReset = getLastWeeklyReset(now);
-  else lastReset = getLastBiWeeklyReset(now);
+  else if (type === 'bi-weekly') lastReset = getLastBiWeeklyReset(now);
+  else return false;
 
   return isBefore(lastDate, lastReset);
 }
