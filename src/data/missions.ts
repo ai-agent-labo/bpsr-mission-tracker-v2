@@ -159,7 +159,7 @@ export const DEFAULT_MISSIONS: Mission[] = [
   },
   {
     id: 'w-guild',
-    name: 'ギルド週間活躍度報酬',
+    name: 'ギルド週間目標',
     type: 'weekly',
     category: 'weekly',
     image: '📊',
@@ -180,7 +180,7 @@ export const DEFAULT_MISSIONS: Mission[] = [
   },
   {
     id: 'w-raid',
-    name: '浮島レイド（神竜の枷）',
+    name: '虚空の浮島・神竜の枷（レイド）',
     type: 'weekly',
     category: 'weekly',
     image: '🐉',
@@ -279,24 +279,6 @@ export const DEFAULT_MISSIONS: Mission[] = [
     bgImage: '/missions/time_gift.png',
     startDate: '2026-02-06',
     endDate: '2026-03-02'
-  },
-  {
-    id: 'e-ash-covenant',
-    name: '祖霊の灰契',
-    type: 'event',
-    category: 'event',
-    image: '🔥',
-    renderType: 'store',
-    description: '入手した各種「灰契」をカナミア族集落の篝り火に捧げて報酬を獲得。捧げた累計回数で限定フレーム等も入手',
-    bgImage: '/missions/ash_covenant.png',
-    startDate: '2026-02-06',
-    endDate: '2026-03-02',
-    subItems: [
-      { id: 'ac-zabun', name: 'ザブン長老の灰契（料理）' },
-      { id: 'ac-karappo', name: 'カラッポ長老の灰契（クラスEXP）' },
-      { id: 'ac-white-wolf', name: 'ホワイトウルフの灰契（モジュール）' },
-      { id: 'ac-kitake', name: 'キタケ長老の灰契（ジェム/ルーノ）' }
-    ]
   },
   {
     id: 'e-ancestor-path',
