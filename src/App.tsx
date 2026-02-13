@@ -15,11 +15,14 @@ import {
   Undo2,
   Clock,
   Gamepad2,
-  Loader2
+  Loader2,
+  Eye,
+  EyeOff
 } from 'lucide-react';
-import { format, differenceInSeconds, parseISO } from 'date-fns';
+import { format, differenceInSeconds, parseISO, formatISO } from 'date-fns';
 import { cn } from './lib/utils';
 import { isMissionActive } from './utils/resetLogic';
+import confetti from 'canvas-confetti';
 
 const SHEET_URL =
   'https://docs.google.com/spreadsheets/d/1W52YwzHD-XvmB-sT45VE9NIHOa4EneW_aUqKIfk1c6I/edit?usp=sharing';
@@ -40,10 +43,28 @@ export default function App() {
 
   const [now, setNow] = useState(new Date());
 
+  const [hideCompleted, setHideCompleted] = useState(() => {
+    const saved = localStorage.getItem('hideCompleted');
+    return saved === 'true';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('hideCompleted', String(hideCompleted));
+  }, [hideCompleted]);
+
   useEffect(() => {
     const timer = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  const [celebrated, setCelebrated] = useState<{ daily: string | null, weekly: string | null }>(() => {
+    const saved = localStorage.getItem('celebrated_resets');
+    return saved ? JSON.parse(saved) : { daily: null, weekly: null };
+  });
+
+  useEffect(() => {
+    localStorage.setItem('celebrated_resets', JSON.stringify(celebrated));
+  }, [celebrated]);
 
   useEffect(() => {
     let cancelled = false;
@@ -83,15 +104,46 @@ export default function App() {
   const dailyMissions = activeMissions.filter((m) => m.category === 'daily');
   const weeklyMissions = activeMissions.filter((m) => m.category === 'weekly');
 
-  const checkboxDaily = dailyMissions.filter(
-    (m) => !m.renderType || m.renderType === 'checkbox'
+  const isMissionCompleted = (mission: Mission) => {
+    if (mission.renderType === 'store') {
+      const subItems = mission.subItems ?? [];
+      return subItems.length > 0 && subItems.every(s => !!state.completed[`${mission.id}:${s.id}`]);
+    }
+    if (mission.renderType === 'raid') {
+      const subItems = mission.subItems ?? [];
+      const lockedItems = (mission.metadata?.lockedItems as string[]) || [];
+      return subItems.length > 0 && subItems.every(s =>
+        ['easy', 'hard', 'night'].every(diff => {
+          const subIdWithDiff = `${s.id}_${diff}`;
+          const isLocked = mission.metadata?.isLocked === true ||
+            lockedItems.includes(subIdWithDiff) ||
+            (s.id === 'light' && diff === 'night' && !lockedItems.includes('light_night_unlock'));
+
+          if (isLocked) return true;
+          return !!state.completed[`${mission.id}:${s.id}_${diff}`];
+        })
+      );
+    }
+    if (mission.renderType === 'ruins') {
+      return state.ruinsFloor >= 60;
+    }
+    if (mission.renderType === 'stock') {
+      const keyType = (mission.metadata?.stockType as 'boss' | 'elite') ?? (mission.id.includes('boss') ? 'boss' : 'elite');
+      const val = keyType === 'boss' ? state.bossKeys : state.eliteKeys;
+      return val === 0;
+    }
+    return !!state.completed[mission.id];
+  };
+
+  const dailyTaskMissions = dailyMissions.filter(
+    (m) => !m.renderType || m.renderType === 'checkbox' || m.renderType === 'stock'
   );
   const dailyProgress =
-    checkboxDaily.length === 0
+    dailyTaskMissions.length === 0
       ? 0
       : Math.round(
-        (checkboxDaily.filter((m) => !!state.completed[m.id]).length /
-          checkboxDaily.length) *
+        (dailyTaskMissions.filter((m) => isMissionCompleted(m)).length /
+          dailyTaskMissions.length) *
         100
       );
 
@@ -106,11 +158,18 @@ export default function App() {
       if (m.renderType === 'store' || m.renderType === 'raid') {
         const subItems = m.subItems ?? [];
         if (m.renderType === 'raid') {
-          // Raid has 3 subitems * 3 diffs = 9
+          const lockedItems = (m.metadata?.lockedItems as string[]) || [];
           subItems.forEach(s => {
             ['easy', 'hard', 'night'].forEach(diff => {
-              total++;
-              if (state.completed[`${m.id}:${s.id}_${diff}`]) done++;
+              const subIdWithDiff = `${s.id}_${diff}`;
+              const isLocked = m.metadata?.isLocked === true ||
+                lockedItems.includes(subIdWithDiff) ||
+                (s.id === 'light' && diff === 'night' && !lockedItems.includes('light_night_unlock'));
+
+              if (!isLocked) {
+                total++;
+                if (state.completed[`${m.id}:${s.id}_${diff}`]) done++;
+              }
             });
           });
         } else {
@@ -120,9 +179,8 @@ export default function App() {
           });
         }
       } else if (m.renderType === 'ruins') {
-        // Ruins is just one value, but let's count it as a task
         total++;
-        if (state.ruinsFloor > 0) done++;
+        if (state.ruinsFloor >= 60) done++;
       } else {
         total++;
         if (state.completed[m.id]) done++;
@@ -132,6 +190,41 @@ export default function App() {
   };
 
   const weeklyProgress = getWeeklyProgress();
+
+  useEffect(() => {
+    const lastDailyReset = formatISO(getNextReset('daily'));
+    const lastWeeklyReset = formatISO(getNextReset('weekly'));
+
+    if (dailyProgress === 100 && celebrated.daily !== lastDailyReset) {
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#06b6d4', '#ffffff', '#22d3ee']
+      });
+      setCelebrated(prev => ({ ...prev, daily: lastDailyReset }));
+    }
+
+    if (weeklyProgress === 100 && celebrated.weekly !== lastWeeklyReset) {
+      confetti({
+        particleCount: 200,
+        spread: 100,
+        origin: { y: 0.6 },
+        colors: ['#3b82f6', '#ffffff', '#60a5fa']
+      });
+      setCelebrated(prev => ({ ...prev, weekly: lastWeeklyReset }));
+    }
+  }, [dailyProgress, weeklyProgress, celebrated, getNextReset]);
+
+  const visibleDailyMissions = useMemo(() => {
+    if (!hideCompleted) return dailyMissions;
+    return dailyMissions.filter(m => !isMissionCompleted(m));
+  }, [dailyMissions, hideCompleted, state.completed]);
+
+  const visibleWeeklyMissions = useMemo(() => {
+    if (!hideCompleted) return weeklyMissions;
+    return weeklyMissions.filter(m => !isMissionCompleted(m));
+  }, [weeklyMissions, hideCompleted, state.completed]);
 
   const renderMissionCard = (mission: Mission) => {
     const isDone = !!state.completed[mission.id];
@@ -156,7 +249,7 @@ export default function App() {
         <Card key={mission.id} className="border-cyan-500/20 md:col-span-2 h-full" bgImage={mission.bgImage}>
           <div className="flex flex-col h-full justify-between gap-4">
             <div className="flex items-start justify-between">
-              <h3 className="text-lg font-black text-slate-300 transition-all font-premium leading-tight">
+              <h3 className="text-lg font-black text-slate-300 transition-all font-premium leading-tight mb-4">
                 {mission.name}
               </h3>
             </div>
@@ -297,15 +390,33 @@ export default function App() {
             </div>
           </Card>
 
+          <button
+            onClick={() => setHideCompleted(!hideCompleted)}
+            className={cn(
+              "flex flex-col items-center justify-center gap-1 px-4 h-[58px] rounded-2xl border transition-all active:scale-95 shrink-0",
+              hideCompleted
+                ? "bg-cyan-500/20 border-cyan-500/40 text-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.2)]"
+                : "bg-slate-800/40 border-slate-700/50 text-slate-500 hover:text-slate-300 hover:border-slate-600"
+            )}
+          >
+            {hideCompleted ? <EyeOff size={18} /> : <Eye size={18} />}
+            <span className="text-[8px] font-black uppercase tracking-[0.2em] whitespace-nowrap">
+              {hideCompleted ? "Show Done" : "Hide Done"}
+            </span>
+          </button>
+
           <div className="flex-1 md:flex-none flex flex-col gap-3 min-w-[200px]">
             <div className="flex flex-col gap-1">
               <div className="flex items-center justify-between">
                 <span className="text-[9px] uppercase font-black text-slate-500 tracking-widest">
                   Daily Sync
                 </span>
-                <span className="text-[10px] font-black text-cyan-400">
-                  {dailyProgress}%
-                </span>
+                <div className="flex items-center gap-1">
+                  {dailyProgress === 100 && <CheckCircle2 size={12} className="text-cyan-400 animate-bounce" />}
+                  <span className="text-[10px] font-black text-cyan-400">
+                    {dailyProgress}%
+                  </span>
+                </div>
               </div>
               <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
                 <div
@@ -320,9 +431,12 @@ export default function App() {
                 <span className="text-[9px] uppercase font-black text-slate-500 tracking-widest">
                   Weekly Sync
                 </span>
-                <span className="text-[10px] font-black text-blue-400">
-                  {weeklyProgress}%
-                </span>
+                <div className="flex items-center gap-1">
+                  {weeklyProgress === 100 && <CheckCircle2 size={12} className="text-blue-400 animate-bounce" />}
+                  <span className="text-[10px] font-black text-blue-400">
+                    {weeklyProgress}%
+                  </span>
+                </div>
               </div>
               <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
                 <div
@@ -355,7 +469,7 @@ export default function App() {
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-min">
-            {dailyMissions.map(renderMissionCard)}
+            {visibleDailyMissions.map(renderMissionCard)}
           </div>
         </section>
 
@@ -371,7 +485,7 @@ export default function App() {
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-min">
-            {weeklyMissions.map(renderMissionCard)}
+            {visibleWeeklyMissions.map(renderMissionCard)}
           </div>
         </section>
       </main>
