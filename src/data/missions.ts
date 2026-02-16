@@ -167,6 +167,15 @@ export const DEFAULT_MISSIONS: Mission[] = [
     bgImage: '/missions/guild_weekly.png',
   },
   {
+    id: 'w-open',
+    name: '開拓者報酬',
+    type: 'weekly',
+    category: 'weekly',
+    image: '🚀',
+    renderType: 'checkbox',
+    bgImage: '/missions/open.png',
+  },
+  {
     id: 'w-ruins',
     name: 'レグディニス遺跡',
     type: 'weekly',
@@ -211,7 +220,7 @@ export const DEFAULT_MISSIONS: Mission[] = [
     category: 'daily',
     image: '🕯️',
     renderType: 'checkbox',
-    description: '【祈歳祝典】毎日更新の謎解きやミニゲームに参加し優待カードを獲得',
+    description: '【祈歳の光の謎解き】とか【祝典の幕間】のミニゲーム',
     bgImage: '/missions/time_of_light.png',
     startDate: '2026-02-25',
     endDate: '2026-03-11'
@@ -223,7 +232,7 @@ export const DEFAULT_MISSIONS: Mission[] = [
     category: 'daily',
     image: '✨',
     renderType: 'checkbox',
-    description: '【祈歳祝典】毎日初回多め。開催場所周辺に滞在して歳序の印を稼ぐ',
+    description: 'アステルリーズで花火見るやつ',
     bgImage: '/missions/bursting_wishes.png',
     startDate: '2026-01-29',
     endDate: '2026-02-26'
@@ -234,28 +243,11 @@ export const DEFAULT_MISSIONS: Mission[] = [
     type: 'event',
     category: 'weekly',
     image: '🧨',
-    renderType: 'stock',
-    description: '【祈歳祝典】週5回まで。20人で爆竹を投げて戦う限定ダンジョン',
+    renderType: 'checkbox',
+    description: '週5回まで。20人で爆竹を投げて戦う限定ダンジョン',
     bgImage: '/missions/saima_invasion.png',
     startDate: '2026-01-29',
     endDate: '2026-02-26'
-  },
-  {
-    id: 'e-prayer-market',
-    name: '祈歳市場',
-    type: 'event',
-    category: 'other',
-    image: '🏮',
-    renderType: 'store',
-    description: '【祈歳祝典】集めた印やカードで限定衣装やマウント、エモートを交換',
-    bgImage: '/missions/prayer_market.png',
-    startDate: '2026-01-29',
-    endDate: '2026-02-26',
-    subItems: [
-      { id: 'pm-mount', name: '遊龍戯月マウントボックス' },
-      { id: 'pm-costume', name: '朔日の驚雷セット' },
-      { id: 'pm-emote', name: 'エモート：祝儀袋を渡す' }
-    ]
   },
   {
     id: 'e-priest-stockpile',
@@ -263,7 +255,7 @@ export const DEFAULT_MISSIONS: Mission[] = [
     type: 'event',
     category: 'weekly',
     image: '📦',
-    description: '毎週の物資提出で報酬獲得。2/7からデイリー活躍度、2/9からダンジョンでも「祭司からの贈り物」を入手可能',
+    description: 'ムーンベリーとハトなんとかと採取して集めるやつ',
     bgImage: '/missions/priest_stockpile.png',
     startDate: '2026-02-06',
     endDate: '2026-03-02'
@@ -275,7 +267,7 @@ export const DEFAULT_MISSIONS: Mission[] = [
     category: 'daily',
     image: '📅',
     renderType: 'checkbox',
-    description: '期間中の累計ログイン報酬。最上級素材・選択ボックスやガシャコインなど豪華報酬を獲得可能',
+    description: '期間中の累計ログイン報酬',
     bgImage: '/missions/time_gift.png',
     startDate: '2026-02-06',
     endDate: '2026-03-02'
@@ -287,7 +279,7 @@ export const DEFAULT_MISSIONS: Mission[] = [
     category: 'other',
     image: '🗺️',
     renderType: 'checkbox',
-    description: 'アステルリーズのウィルバートから始まる連続クエスト。クリアで「祭司からの贈り物」や限定ハガキを入手',
+    description: '連続クエスト。いつでるのかわからん。',
     bgImage: '/missions/ancestor_path.png',
     startDate: '2026-02-06',
     endDate: '2026-03-02'
@@ -298,8 +290,12 @@ export const DEFAULT_MISSIONS: Mission[] = [
     type: 'event',
     category: 'daily',
     image: '💃',
-    description: '金土日の特定時間に開催。篝り火で「霊舞」に参加すると、1日1回ランダムで「灰契」を獲得可能',
+    description: '金土日に開催。1日1回ランダムで「灰契」を獲得可能',
     bgImage: '/missions/spirit_dance.png',
+    metadata: {
+      activeDays: ['Friday', 'Saturday', 'Sunday'],
+      //activeTimeRange: { start: '10:00', end: '22:00' }
+    },
     startDate: '2026-02-06',
     endDate: '2026-03-02'
   },
@@ -310,7 +306,7 @@ export const DEFAULT_MISSIONS: Mission[] = [
     category: 'daily',
     image: '🍖',
     renderType: 'checkbox',
-    description: '12時/18時からの開催時間にカナミア集落で食事。筋力・敏捷・知力+300などの強力なバフを最大5時間分獲得',
+    description: '12時/18時からの開催時間にカナミア集落で食事。',
     bgImage: '/missions/harvest_feast.png',
     startDate: '2026-02-06',
     endDate: '2026-03-19'
@@ -334,7 +330,7 @@ export const DEFAULT_MISSIONS: Mission[] = [
     category: 'daily',
     image: '💌',
     renderType: 'checkbox',
-    description: '恋のお手紙を届けるミッション',
+    description: '恋のお手紙を届けるミッション。ブライオニーちゃんに話しかけよう。',
     bgImage: '/missions/love_letter.png',
     startDate: '2026-02-11',
     endDate: '2026-02-23'
