@@ -205,9 +205,9 @@ export const DEFAULT_MISSIONS: Mission[] = [
     image: '🐉',
     renderType: 'raid',
     subItems: [
-      { id: 'ice', name: '氷竜' },
-      { id: 'dark', name: '闇竜' },
-      { id: 'light', name: '光竜' }
+      { id: 'ice', name: '氷竜 ❄️' },
+      { id: 'dark', name: '闇竜 🌑' },
+      { id: 'light', name: '光竜 ☀️' }
     ],
     bgImage: '/missions/floating_island_raid.png',
   },

@@ -6,7 +6,7 @@ import type { Mission, SubItem } from '../types';
 const DIFFICULTIES = [
   { key: 'easy', label: 'Easy' },
   { key: 'hard', label: 'Hard' },
-  { key: 'night', label: 'Night' }
+  { key: 'night', label: 'Nightmare' }
 ] as const;
 
 interface RaidGridProps {
@@ -39,7 +39,7 @@ export const RaidGrid: React.FC<RaidGridProps> = ({ mission, completed, onToggle
           {DIFFICULTIES.map((diff) => {
             const fullId = `${mission.id}:${sub.id}_${diff.key}`;
             const subIdWithDiff = `${sub.id}_${diff.key}`;
-            const isLocked = mission.metadata?.isLocked === true || lockedItems.includes(subIdWithDiff) || (sub.id === 'light' && diff.key === 'night' && !lockedItems.includes('light_night_unlock')); // Default lock if not explicitly allowed
+            const isLocked = mission.metadata?.isLocked === true || lockedItems.includes(subIdWithDiff);
 
             const isDone = !!completed[fullId];
             return (

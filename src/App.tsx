@@ -117,8 +117,7 @@ export default function App() {
         ['easy', 'hard', 'night'].every(diff => {
           const subIdWithDiff = `${s.id}_${diff}`;
           const isLocked = mission.metadata?.isLocked === true ||
-            lockedItems.includes(subIdWithDiff) ||
-            (s.id === 'light' && diff === 'night' && !lockedItems.includes('light_night_unlock'));
+            lockedItems.includes(subIdWithDiff);
 
           if (isLocked) return true;
           return !!state.completed[`${mission.id}:${s.id}_${diff}`];
@@ -164,8 +163,7 @@ export default function App() {
             ['easy', 'hard', 'night'].forEach(diff => {
               const subIdWithDiff = `${s.id}_${diff}`;
               const isLocked = m.metadata?.isLocked === true ||
-                lockedItems.includes(subIdWithDiff) ||
-                (s.id === 'light' && diff === 'night' && !lockedItems.includes('light_night_unlock'));
+                lockedItems.includes(subIdWithDiff);
 
               if (!isLocked) {
                 total++;
